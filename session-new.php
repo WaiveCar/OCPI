@@ -1,18 +1,5 @@
 <?php
-
-$db = new SQLite3(__DIR__ . "/../../ocpi.db");
-$schema = [
-  'sessions' => [
-    'id'     => 'INTEGER PRIMARY KEY', 
-    'start'  => 'TIMESTAMP', 
-    'end'    => 'TIMESTAMP',
-    'session'=> 'INTEGER',
-    'kwh'    => 'FLOAT',
-    'evse'   => 'INTEGER',
-    'status' => 'TEXT'
-  ]
-];
-
+include('lib.php');
 $data = json_decode(file_get_contents('php://input'), true);
 
 file_put_contents(
