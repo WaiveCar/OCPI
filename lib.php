@@ -94,8 +94,8 @@ function reservation($id, $user = false) {
     return $redis->get($key);
   }
 
-  // we give it 60 seconds to start
-  $redis->set($key, $user, 60);
+  // we give it some time to start
+  $redis->set($key, $user, 120);
 }
 
 function db_update($table, $id, $kv) {
