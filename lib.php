@@ -17,6 +17,14 @@ $schema = [
   ]
 ];
 
+function db_string($what) {
+  return "'$what'";
+}
+function db_date($what) {
+ return "datetime($what,'unixepoch')";
+}
+
+
 function aget($source, $keyList, $default = null) {
   if(!is_array($keyList)) {
     $keyStr = $keyList;
