@@ -8,20 +8,20 @@ $user = reservation($evse);
 
 if(!$row) {
   $row = ['id' => db_insert('sessions', [
-      'start' 	=> aget($data, 'start_datetime'),
+      'start' 	=> db_date(aget($data, 'start_datetime')),
       'session' => aget($data, 'id'),
       'user'    => $user,
       'evse'    => $evse,
-      'status' 	=> aget($data, 'status'),
+      'status' 	=> db_string(aget($data, 'status')),
     ])
   ];
 } 
 
 db_update('sessions', $row['id'], [
-  'end'     => aget($data, 'end_datetime'),
+  'end'     => db_date(aget($data, 'end_datetime')),
   'kwh'     => aget($data, 'kwh'),
   'cost'    => aget($data, 'total_cost'),
-  'status'  => aget($data, 'status')
+  'status'  => db_string(aget($data, 'status'))
 ]);
 
 file_put_contents(
