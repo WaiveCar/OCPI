@@ -73,7 +73,7 @@ function db_connect() {
 function db_get($key) {
   global $db;
   $key = $db->escapeString($key);
-  return $db->querySingle("select id from sessions where session='$key'");
+  return $db->querySingle("select * from sessions where session='$key'");
 }
 
 function reservation($id, $user = false) {
