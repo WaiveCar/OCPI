@@ -1,6 +1,6 @@
 <?php
 
-$db = new SQLite3(__DIR__ . "/../../ocpi.db");
+$DB = false;
 $REDIS = false;
 
 $schema = [
@@ -22,7 +22,7 @@ function db_string($what) {
   return "'$what'";
 }
 function db_date($what) {
- return "datetime($what,'unixepoch')";
+  return "datetime($what,'unixepoch')";
 }
 
 
@@ -57,7 +57,7 @@ function aget($source, $keyList, $default = null) {
 }
 
 function get_column_list($table_name) {
-  $db = db_connect();
+  $db = get_db();
   $res = $db->query("pragma table_info( $table_name )");
 
   return array_map(function($row) { 
@@ -74,15 +74,22 @@ function get_redis() {
   return $REDIS;
 }
 
-function db_connect() {
-  global $db;
-  return $db;
+function get_db() {
+  global $DB;
+  if(!$DB) {
+    $DB = new SQLite3(__DIR__ . "/../../ocpi.db");
+  }
+  return $DB;
 }
 
 function db_get($key) {
-  global $db;
-  $key = $db->escapeString($key);
-  return $db->querySingle("select * from sessions where session='$key'");
+
+  $db = get_db();
+
+  $qstr = "select * from sessions where session=$key";
+  error_log($qstr);
+
+  return $db->querySingle($qstr);
 }
 
 function reservation($id, $user = false) {
@@ -102,29 +109,31 @@ function reservation($id, $user = false) {
 function db_update($table, $id, $kv) {
   $fields = [];
 
-  $db = db_connect();
+  $db = get_db();
 
   foreach($kv as $k => $v) {
-    $fields[] = "$k=".$db->escapeString($v);
+    $fields[] = "$k=$v";
   } 
 
   $fields = implode(',', $fields);
 
-  return $db->exec("update $table set $fields where id = $id");
+  $qstr = "update $table set $fields where id = $id";
+  error_log($qstr);
+  return $db->exec($qstr);
 }
 
 function db_insert($table, $kv) {
   $fields = [];
   $values = [];
 
-  $db = db_connect();
+  $db = get_db();
 
   foreach($kv as $k => $v) {
     $fields[] = $k;
     if($v === false) {
       $values[] = 'false';
     } else {
-      $values[] = $v;//db->escapeString($v);
+      $values[] = $v;
     }
   } 
 
@@ -132,13 +141,13 @@ function db_insert($table, $kv) {
   $fields = implode(',', $fields);
 
   $qstr = "insert into $table($fields) values($values)";
+  error_log($qstr);
 
   try {
     if($db->exec($qstr)) {
       return $db->lastInsertRowID();
     } 
   } catch(Exception $ex) { 
-    error_log($qstr);
     error_log($ex);
   }
   return $qstr;
