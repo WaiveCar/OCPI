@@ -3,7 +3,7 @@ include('lib.php');
 $data = json_decode(file_get_contents('php://input'), true);
 
 $evse = aget($data, 'location.id');
-$row = db_get($data['id']);
+$row = db_get(aget($data, 'id'));
 $user = reservation($evse);
 
 if(!$row) {
