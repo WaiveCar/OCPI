@@ -10,7 +10,7 @@ $schema = [
     'end'    => 'TIMESTAMP',
     'session'=> 'INTEGER',
     'kwh'    => 'FLOAT',
-		'cost'	 => 'FLOAT',
+    'cost'	 => 'FLOAT',
     'evse'   => 'INTEGER',
     'user'   => 'INTEGER',
     'status' => 'TEXT'
@@ -73,7 +73,7 @@ function db_connect() {
 function db_get($key) {
   global $db;
   $key = $db->escapeString($key);
-  return $db->querySingle("select name from sessions where session='$key'");
+  return $db->querySingle("select id from sessions where session='$key'");
 }
 
 function reservation($id, $user = false) {
