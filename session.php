@@ -11,7 +11,7 @@ if(!$row) {
       'start' 	=> aget($data, 'start_datetime'),
       'session' => aget($data, 'id'),
       'user'    => $user,
-      'evse' 		=> $evse,
+      'evse'    => $evse,
       'status' 	=> aget($data, 'status'),
     ])
   ];

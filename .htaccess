@@ -3,12 +3,7 @@ RewriteBase /
 AddType 'application/json' txt
 
 RewriteRule "sessions/(.*)" "/ocpi/session.php?path=$1" [QSA,L]     
-# "/ocpi/session.php?path=$1"  [R]
 
 RewriteRule locations/(.*) "/ocpi/location.php?path=$1" [QSA,L]     
 RewriteRule "tokens" "/ocpi/token.php" [QSA,L]     
-#RewriteCond %{REQUEST_FILENAME} !-f 
-#RewriteRule "^(.+)$"      "/ocpi/$1.php" [L]
-#RewriteCond %{REQUEST_URI} !(.*)/$
-#RewriteRule "^(.+)$"      "/ocpi/$1.php" [L]
 
