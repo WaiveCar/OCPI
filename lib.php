@@ -13,7 +13,8 @@ $schema = [
     'cost'   => 'FLOAT',
     'evse'   => 'INTEGER',
     'user'   => 'INTEGER',
-    'status' => 'TEXT'
+    'status' => 'TEXT',
+    'paid'   => 'BOOLEAN default false'
   ]
 ];
 
