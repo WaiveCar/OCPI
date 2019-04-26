@@ -1,6 +1,8 @@
 <?php
 
 $db = new SQLite3(__DIR__ . "/../../ocpi.db");
+$REDIS = false;
+
 $schema = [
   'sessions' => [
     'id'     => 'INTEGER PRIMARY KEY', 
@@ -10,6 +12,7 @@ $schema = [
     'kwh'    => 'FLOAT',
 		'cost'	 => 'FLOAT',
     'evse'   => 'INTEGER',
+    'user'   => 'INTEGER',
     'status' => 'TEXT'
   ]
 ];
@@ -53,6 +56,15 @@ function get_column_list($table_name) {
   }, sql_all($res));
 }
 
+function get_redis() {
+  global $REDIS;
+  if(!$REDIS) {
+    $REDIS = new Redis();
+    $REDIS->connect('127.0.0.1');
+  }
+  return $REDIS;
+}
+
 function db_connect() {
   global $db;
   return $db;
@@ -62,6 +74,20 @@ function db_get($key) {
   global $db;
   $key = $db->escapeString($key);
   return $db->querySingle("select name from sessions where session='$key'");
+}
+
+function reservation($id, $user = false) {
+  if(!$id) {
+    return false;
+  }
+  $key = "evse:$id";
+  $redis = get_redis();
+  if($user === false) {
+    return $redis->get($key);
+  }
+
+  // we give it 60 seconds to start
+  $redis->set($key, $user, 60);
 }
 
 function db_update($table, $id, $kv) {
@@ -132,5 +158,3 @@ function sql_kv($hash, $operator = '=', $quotes = "'", $intList = []) {
 }
 
 
-function get_column_list($table_name) {
-  $db = db_connect();
