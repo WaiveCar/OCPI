@@ -86,12 +86,16 @@ function get_db() {
 
 function db_get($key) {
 
+  if(empty($key)) {
+    return false;
+  }
+
   $db = get_db();
 
   $qstr = "select * from sessions where session=$key";
   error_log($qstr);
 
-  return $db->querySingle($qstr);
+  return $db->querySingle($qstr, true);
 }
 
 function reservation($id, $user = false) {
@@ -119,9 +123,11 @@ function db_update($table, $id, $kv) {
 
   $fields = implode(',', $fields);
 
-  $qstr = "update $table set $fields where id = $id";
+  $qstr = "update $table set $fields where id=$id";
   error_log($qstr);
-  return $db->exec($qstr);
+  if(!empty($id)) {
+    return $db->exec($qstr);
+  }
 }
 
 function db_insert($table, $kv) {
@@ -145,13 +151,9 @@ function db_insert($table, $kv) {
   $qstr = "insert into $table($fields) values($values)";
   error_log($qstr);
 
-  try {
-    if($db->exec($qstr)) {
-      return $db->lastInsertRowID();
-    } 
-  } catch(Exception $ex) { 
-    error_log($ex);
-  }
+  if($db->exec($qstr)) {
+    return $db->lastInsertRowID();
+  } 
   return $qstr;
 }
 

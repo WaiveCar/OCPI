@@ -1,6 +1,7 @@
 <?php
 include('lib.php');
-$data = json_decode(file_get_contents('php://input'), true);
+$raw = file_get_contents('php://input');
+$data = json_decode($raw, true);
 if($data) {
 
   $evse = aget($data, 'location.id');
@@ -22,16 +23,15 @@ if($data) {
     $row = ['id' => db_insert('sessions', $insert)];
   } 
 
-  db_update('sessions', $row['id'], [
-    'end'     => db_date(aget($data, 'end_datetime')),
-    'kwh'     => aget($data, 'kwh'),
-    'cost'    => aget($data, 'total_cost'),
-    'status'  => db_string(aget($data, 'status'))
-  ]);
+  $end = aget($data, 'end_datetime');
+  if($end) {
+    db_update('sessions', $row['id'], [
+      'end'     => db_date($end),
+      'kwh'     => aget($data, 'kwh'),
+      'cost'    => aget($data, 'total_cost'),
+      'status'  => db_string(aget($data, 'status'))
+    ]);
+  }
 }
 
-file_put_contents(
-  "/tmp/session-info.tmp", json_encode([
-    'time' => date('c'),
-    'data' => $data
-  ]) . "\n", FILE_APPEND);
+file_put_contents("/tmp/session-info.tmp", date('c') . "|$raw\n", FILE_APPEND);
