@@ -24,7 +24,7 @@ function db_string($what) {
 
 function db_date($what) {
   $what = db_string(trim($what, '"\''));
-  return "datetime($what,'unixepoch')";
+  return "datetime($what)";
 }
 
 
