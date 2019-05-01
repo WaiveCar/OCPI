@@ -18,6 +18,16 @@ $schema = [
   ]
 ];
 
+function do_error($what) {
+  echo json_encode(['res' => false, 'data' => $what]);
+  exit(0);
+}
+
+function do_success($what) {
+	echo json_encode(['res' => true, 'data' => $what]);
+	exit(0);
+}
+
 function db_string($what) {
   return "'$what'";
 }
@@ -86,7 +96,18 @@ function get_db() {
 
 function db_one($qstr) {
   $db = get_db();
+  error_log($qstr);
   return $db->querySingle($qstr, true);
+}
+
+function db_all($qstr) {
+	$res = [];
+	$db = get_db();
+
+	if($sql = $db->query($qstr)) {
+		while(($res[] = $sql->fetchArray()) !== false);
+	}
+	return $res;
 }
 
 function db_get($key) {
