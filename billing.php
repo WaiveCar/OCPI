@@ -8,7 +8,13 @@ if(aget($_GET, 'key') !== $key) {
 
 $verb = $_SERVER['REQUEST_METHOD'];
 if($verb === 'GET') {
-	return do_success(db_all('select * from sessions where paid="false"'));
+  $append = false;
+  $user = intval(aget($_GET, 'user'));
+  if($user) {
+    $append = "and user = $user";
+  }
+
+	return do_success(db_all("select * from sessions where paid='false' $append"));
 }
 
 if($verb === 'POST' || $verb === 'PUT') {
