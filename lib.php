@@ -105,8 +105,9 @@ function db_all($qstr) {
 	$db = get_db();
 
 	if($sql = $db->query($qstr)) {
-		while(($res[] = $sql->fetchArray()) !== false);
+		while(($res[] = $sql->fetchArray(SQLITE3_ASSOC)) !== false);
 	}
+  array_pop($res);
 	return $res;
 }
 
