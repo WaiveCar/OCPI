@@ -11,7 +11,7 @@ if($data) {
     $insert = [
       'start' 	=> db_date(aget($data, 'start_datetime')),
       'session' => aget($data, 'id'),
-      'evse'    => $evse,
+      'evse'    => intval($evse),
       'status' 	=> db_string(aget($data, 'status')),
     ];
 
@@ -24,18 +24,18 @@ if($data) {
   } 
 
   $obj = [
-    'kwh'     => aget($data, 'kwh'),
+    'kwh'     => floatval(aget($data, 'kwh')),
     'status'  => db_string(aget($data, 'status'))
   ];
 
   $user = reservation($evse);
   if($user) {
-    $obj['user'] = $user;
+    $obj['user'] = intval($user);
   }
 
   $cost = aget($data, 'total_cost');
   if($cost) {
-    $obj['cost'] = $cost;
+    $obj['cost'] = floatval($cost);
   }
 
   $end = aget($data, 'end_datetime');
