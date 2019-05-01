@@ -84,6 +84,11 @@ function get_db() {
   return $DB;
 }
 
+function db_one($qstr) {
+  $db = get_db();
+  return $db->querySingle($qstr, true);
+}
+
 function db_get($key) {
 
   if(empty($key)) {
@@ -106,10 +111,15 @@ function reservation($id, $user = false) {
   $redis = get_redis();
   if($user === false) {
     return $redis->get($key);
+  } 
+
+  $row = db_one("select * from sessions where status='active' and evse=$id");
+  if($row) {
+    db_update('sessions', $row['id'], ['user' => $user]);
   }
 
   // we give it some time to start
-  $redis->set($key, $user, 120);
+  $redis->set($key, $user, 240);
 }
 
 function db_update($table, $id, $kv) {

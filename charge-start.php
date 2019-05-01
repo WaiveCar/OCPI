@@ -2,7 +2,7 @@
 include('lib.php');
 
 reservation(
-  aget($_GET, 'evse'), 
+  aget($_GET, 'loc'), 
   aget($_GET, 'user')
 );
 

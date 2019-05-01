@@ -23,15 +23,27 @@ if($data) {
     $row = ['id' => db_insert('sessions', $insert)];
   } 
 
+  $obj = [
+    'kwh'     => aget($data, 'kwh'),
+    'status'  => db_string(aget($data, 'status'))
+  ];
+
+  $user = reservation($evse);
+  if($user) {
+    $obj['user'] = $user;
+  }
+
+  $cost = aget($data, 'total_cost');
+  if($cost) {
+    $obj['cost'] = $cost;
+  }
+
   $end = aget($data, 'end_datetime');
   if($end) {
-    db_update('sessions', $row['id'], [
-      'end'     => db_date($end),
-      'kwh'     => aget($data, 'kwh'),
-      'cost'    => aget($data, 'total_cost'),
-      'status'  => db_string(aget($data, 'status'))
-    ]);
+    $obj['end'] = db_date($end);
   }
+
+  db_update('sessions', $row['id'], $obj);
 }
 
 file_put_contents("/tmp/session-info.tmp", date('c') . "|$raw\n", FILE_APPEND);
