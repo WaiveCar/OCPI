@@ -24,8 +24,8 @@ function do_error($what) {
 }
 
 function do_success($what) {
-	echo json_encode(['res' => true, 'data' => $what]);
-	exit(0);
+  echo json_encode(['res' => true, 'data' => $what]);
+  exit(0);
 }
 
 function db_string($what) {
@@ -101,14 +101,14 @@ function db_one($qstr) {
 }
 
 function db_all($qstr) {
-	$res = [];
-	$db = get_db();
+  $res = [];
+  $db = get_db();
 
-	if($sql = $db->query($qstr)) {
-		while(($res[] = $sql->fetchArray(SQLITE3_ASSOC)) !== false);
-	}
+  if($sql = $db->query($qstr)) {
+    while(($res[] = $sql->fetchArray(SQLITE3_ASSOC)) !== false);
+  }
   array_pop($res);
-	return $res;
+  return $res;
 }
 
 function db_get($key) {
