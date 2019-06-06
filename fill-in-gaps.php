@@ -53,7 +53,7 @@ function curldo($url, $params = false, $opts = []) {
 $earliest = db_one('select datetime(min(start), "-18 hour") as m from sessions where cost is null');
 
 if(empty($earliest)) {
-  echo "Nothing to do!"
+  error_log("Nothing to do!");
   exit(0);
 }
 
