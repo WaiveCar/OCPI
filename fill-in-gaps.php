@@ -29,14 +29,10 @@ function curldo($url, $params = false, $opts = []) {
       'res' => $res
   ]);
   var_dump(['>>>', curl_getinfo ($ch), json_decode($tolog, true)]);
-  
 
   file_put_contents('/tmp/log.txt', $tolog, FILE_APPEND);
    */
 
-  if(isset($opts['raw'])) {
-    return $res;
-  }
   $resJSON = @json_decode($res, true);
   if($resJSON) {
     return $resJSON;
@@ -71,11 +67,14 @@ $emptyList = array_map(function($row) { return $row['session']; }, db_all('selec
 $res = curldo('sessions', ['date_from' => $earliest]);
 
 $db = get_db();
-if (!empty($res['data'])) {
-  foreach($res['data'] as $session) {
-    if (array_search($session['id'], $emptyList) !== false) {
-      $qstr = "update sessions set status='${session['status']}', cost=${session['total_cost']} where session=${session['id']}\n";
-      $db->exec($qstr);
-    }
+if (empty($res['data'])) {
+  error_log("Nothing to do!");
+  exit(0);
+}
+
+foreach($res['data'] as $session) {
+  if (array_search($session['id'], $emptyList) !== false) {
+    $qstr = "update sessions set status='${session['status']}', cost=${session['total_cost']} where session=${session['id']}\n";
+    $db->exec($qstr);
   }
 }
