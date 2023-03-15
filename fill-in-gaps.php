@@ -3,7 +3,7 @@
 
 include('lib.php');
 function curldo($url, $params = false, $opts = []) {
-  $HOST = 'https://op.evgo.com/externalIncoming/ocpi/cpo/2.1.1';
+  $HOST = 'https://xxxx/externalIncoming/ocpi/cpo/2.1.1';
 
   $ch = curl_init();
   $url = '/' . ltrim($url, '/');
@@ -11,7 +11,7 @@ function curldo($url, $params = false, $opts = []) {
     $url .= '?' . http_build_query($params);
   }
 
-  $header[] = "Authorization: Token 7e64ef7b-20cb-447c-92e0-253605c4edf7";
+  $header[] = "Authorization: Token ";
     
   curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
   curl_setopt($ch, CURLOPT_URL, $HOST . $url);
