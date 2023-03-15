@@ -1,7 +1,7 @@
 <?
 include('lib.php');
 
-$key = 'wfI8FEOVTaKOkXeF7QczhA';
+$key = '';
 if(aget($_GET, 'key') !== $key) {
   return do_error('Bad key');
 }
